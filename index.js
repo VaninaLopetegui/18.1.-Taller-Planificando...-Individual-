@@ -4,42 +4,38 @@ const mariadb = require("mariadb");
 const pool = mariadb.createPool({
     host: "localhost",
     user: "root",
-    password: "1234",
-    database: "pruebadb",
+    password: "123",
+    database: "planning",
     connectionLimit: 5,
 });
 
 const app = express();
-const port = 3000;
+const port = 4000;
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.send("<h1>Bienvenid@ al servidor</h1>");
-});
-
-app.get("/people", async (req, res) => {
+app.get("/todo", async (req, res) => {
     let conn;
     try {
     conn = await pool.getConnection();
     const rows = await conn.query(
-        "SELECT id, name, lastname, email FROM people"
+        "SELECT id, name, description, created_at, updated_at, status FROM todo"
     );
 
     res.json(rows);
     } catch (error) {
     res.status(500).json({ message: "Se rompió el servidor" });
     } finally {
-    if (conn) conn.release(); //release to pool
+    if (conn) conn.release();
     }
 });
 
-app.get("/people/:id", async (req, res) => {
+app.get("/todo/:id", async (req, res) => {
     let conn;
     try {
     conn = await pool.getConnection();
     const rows = await conn.query(
-        "SELECT id, name, lastname, email FROM people WHERE id=?",
+        "SELECT id, name, description, created_at, updated_at, status FROM todo WHERE id=?",
         [req.params.id]
     );
 
@@ -47,17 +43,17 @@ app.get("/people/:id", async (req, res) => {
     } catch (error) {
     res.status(500).json({ message: "Se rompió el servidor" });
     } finally {
-    if (conn) conn.release(); //release to pool
+    if (conn) conn.release();
     }
 });
 
-app.post("/people", async (req, res) => {
+app.post("/todo", async (req, res) => {
     let conn;
     try {
     conn = await pool.getConnection();
     const response = await conn.query(
-        `INSERT INTO people(name, lastname, email) VALUE(?, ?, ?)`,
-        [req.body.name, req.body.lastname, req.body.email]
+        `INSERT INTO todo(name, description, created_at, updated_at, status) VALUE(?, ?, ?, ?, ?)`,
+        [req.body.name, req.body.description, req.body.created_at, req.body.updated_at, req.body.status]
     );
 
     res.json({ id: parseInt(response.insertId), ...req.body });
@@ -65,17 +61,17 @@ app.post("/people", async (req, res) => {
     console.log(error);
     res.status(500).json({ message: "Se rompió el servidor" });
     } finally {
-        if (conn) conn.release(); //release to pool
+        if (conn) conn.release();
   }
 });
 
-app.put("/people/:id", async (req, res) => {
+app.put("/todo/:id", async (req, res) => {
     let conn;
     try {
     conn = await pool.getConnection();
     const response = await conn.query(
-        `UPDATE people SET name=?, lastname=?, email=? WHERE id=?`,
-        [req.body.name, req.body.lastname, req.body.email, req.params.id]
+        `UPDATE todo SET name=?, description=?, created_at=?, updated_at=?, status=? WHERE id=?`,
+        [req.body.name, req.body.description, req.body.created_at, req.body.updated_at, req.body.status, req.params.id]
     );
 
     res.json({ id: req.params.id, ...req.body });
@@ -83,22 +79,22 @@ app.put("/people/:id", async (req, res) => {
     console.log(error);
     res.status(500).json({ message: "Se rompió el servidor" });
     } finally {
-    if (conn) conn.release(); //release to pool
+    if (conn) conn.release();
     }
 });
 
-app.delete("/people/:id", async (req, res) => {
+app.delete("/todo/:id", async (req, res) => {
     let conn;
     try {
     conn = await pool.getConnection();
-    const rows = await conn.query("DELETE FROM people WHERE id=?", [
+    const rows = await conn.query("DELETE FROM todo WHERE id=?", [
         req.params.id,
     ]);
     res.json({ message: "Elemento eliminado correctamente" });
     } catch (error) {
     res.status(500).json({ message: "Se rompió el servidor" });
     } finally {
-    if (conn) conn.release(); //release to pool
+    if (conn) conn.release();
     }
 });
 
