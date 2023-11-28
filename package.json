@@ -1,0 +1,25 @@
+{
+  "name": "taller-planificando-individual-semana-18",
+  "version": "1.0.0",
+  "description": "trabajando con nodejs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VaninaLopetegui/18.1.-Taller-Planificando...-Individual-.git"
+  },
+  "author": "Vanina Lopetegui",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VaninaLopetegui/18.1.-Taller-Planificando...-Individual-/issues"
+  },
+  "homepage": "https://github.com/VaninaLopetegui/18.1.-Taller-Planificando...-Individual-#readme",
+  "dependencies": {
+    "mariadb": "^3.2.2"
+  }
+}
